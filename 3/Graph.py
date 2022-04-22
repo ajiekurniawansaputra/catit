@@ -2,7 +2,6 @@ import json
 import logging
 import pandas as pd
 import matplotlib.pyplot as plt
-import time 
 
 def main(debug=False):
     if debug == True:
