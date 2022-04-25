@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Graph</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+</head>
+<body>
+
+    <h5>{{room}} in {{sensor}}</h5>
+    <canvas id="lineChart" width="900" height="400"></canvas>
+    <script>
+        var ctx = document.getElementById("lineChart").getContext("2d");
+        var lineChart = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: {{dates | safe}},
+                datasets: [
+                    {
+                        label: "min",
+                        data: {{min_data | safe}},
+                        fill: false,
+                        borderColor: "rgb(132,255,190",
+                        lineTension:0.3
+                    },
+                    {
+                        label: "max",
+                        data: {{max_data | safe}},
+                        fill: false,
+                        borderColor: "rgb(255,188,188",
+                        lineTension:0.3
+                    },
+                    {
+                        label: "median",
+                        data: {{median_data | safe}},
+                        fill: false,
+                        borderColor: "rgb(104,82,253",
+                        lineTension:0.3
+                    },
+                    {
+                        label: "mean",
+                        data: {{mean_data | safe}},
+                        fill: false,
+                        borderColor: "rgb(75,192,192",
+                        lineTension:0.3
+                    },
+                ]
+            },
+            options: {
+                responsive:true
+            }
+        });
+    </script>
+
+</body>
+</html>

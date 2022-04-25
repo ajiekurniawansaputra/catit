@@ -1,8 +1,31 @@
-from flask import Flask
+from flask import Flask, render_template
 import json
 from datetime import datetime
+import socket
+import requests
 
 app = Flask(__name__)
+hostname = socket.gethostname()
+ip_address = socket.gethostbyname(hostname)
+
+@app.get("/<string:sensor>/<string:room_area>")
+def draw_graph(sensor,room_area):
+    response = requests.get(f"http://{ip_address}:5000/api/sensor")
+    dates = response.json()['array'][room_area].keys()
+    min_data = [] 
+    max_data = []
+    median_data = []
+    mean_data = []
+    dates_data = []
+    for date in dates:
+        dates_data.append(date)
+        item = response.json()['array'][room_area][date][sensor]
+        min_data.append(item['min'])
+        max_data.append(item['max'])
+        median_data.append(item['median'])
+        mean_data.append(item['mean'])
+    return render_template("graph.html", dates=dates_data, min_data=min_data, max_data=max_data, 
+        median_data=median_data, mean_data=mean_data, sensor=sensor, room=room_area)
 
 @app.get("/api/sensor")
 def get_sensor():
@@ -80,21 +103,3 @@ if __name__ == '__main__':
     app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
     app.config['JSON_SORT_KEYS'] = False
     app.run(host="0.0.0.0", port=5000, use_reloader=True)
-    
-    '''
-    shape of aggregated data
-    {
-        'array':{
-            room:{
-                date:{
-                    sensor:{
-                        'min':value,
-                        'max':value,
-                        'median':value,
-                        'mean':value
-                    }
-                }
-            }
-        }
-    }
-    '''
